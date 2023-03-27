@@ -27,10 +27,29 @@ public class BookService {
     }
 
     public Book updateBook(Book book) {
+
+        if (findBookById(book.getId()).isEmpty()) {
+            return null;
+        }
         return bookRepository.save(book);
     }
 
     public void deleteBookById(Long id) {
-        bookRepository.deleteById(id);
+        if (findBookById(id).isPresent()) {
+            bookRepository.deleteById(id);
+        }
+    }
+
+    public Book convertToBook(Optional<Book> optionalBook) {
+        Book book = new Book();
+
+        book.setId((optionalBook.get().getId()));
+        book.setTitle(optionalBook.get().getTitle());
+        book.setAuthor(optionalBook.get().getAuthor());
+        book.setPublisher(optionalBook.get().getPublisher());
+        book.setPublication(optionalBook.get().getPublication());
+        book.setPrice(optionalBook.get().getPrice());
+
+        return book;
     }
 }
