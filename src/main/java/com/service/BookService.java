@@ -27,7 +27,6 @@ public class BookService {
     }
 
     public Book updateBook(Book book) {
-
         if (findBookById(book.getId()).isEmpty()) {
             return null;
         }
@@ -35,7 +34,7 @@ public class BookService {
     }
 
     public void deleteBookById(Long id) {
-        if (findBookById(id).isPresent()) {
+        if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         }
     }

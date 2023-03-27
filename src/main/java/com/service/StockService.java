@@ -6,9 +6,7 @@ import com.model.StockFormDTO;
 import com.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +36,23 @@ public class StockService {
         return stockRepository.findByBook(book);
     }
 
+    public Stock updateStock(Long id, StockFormDTO stockFormDTO) {
+
+        if (stockFormDTO.getAvailableQuantity() < 0) {
+            return null;
+        }
+
+        Optional<Stock> optionalStock = findStockById(id);
+        if (optionalStock.isEmpty()) {
+            return null;
+        }
+
+        Stock stock = convertToStock(optionalStock);
+        stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
+
+        return stockRepository.save(stock);
+    }
+
     public Stock createStock(StockFormDTO stockFormDTO) {
         Optional<Book> optionalBook = bookService.findBookById(stockFormDTO.getIdBook());
 
@@ -54,5 +69,21 @@ public class StockService {
 
         stock = new Stock(book, stockFormDTO.getAvailableQuantity());
         return stockRepository.save(stock);
+    }
+
+    public void deleteStock(Long id){
+        if(stockRepository.existsById(id)){
+            stockRepository.deleteById(id);
+        }
+    }
+
+    public Stock convertToStock(Optional<Stock> optionalStock) {
+        Stock stock = new Stock();
+
+        stock.setId(optionalStock.get().getId());
+        stock.setBook(optionalStock.get().getBook());
+        stock.setAvailableQuantity(optionalStock.get().getAvailableQuantity());
+
+        return stock;
     }
 }

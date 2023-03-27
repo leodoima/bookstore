@@ -29,7 +29,7 @@ public class StockController {
 
     @GetMapping
     @RequestMapping(value = "/book/{idBook}")
-    public Stock findByBook(@PathVariable Long idBook) {
+    public Stock findByBook(@PathVariable("idBook") Long idBook) {
         return stockService.findStockByIdBook(idBook);
     }
 
@@ -37,5 +37,15 @@ public class StockController {
     @ResponseStatus(HttpStatus.CREATED)
     public Stock create(@RequestBody StockFormDTO stockFormDTO) {
         return stockService.createStock(stockFormDTO);
+    }
+
+    @PutMapping("/{id}")
+    public Stock update(@PathVariable("id") Long id, @RequestBody StockFormDTO stockFormDTO) {
+        return stockService.updateStock(id, stockFormDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        stockService.deleteStock(id);
     }
 }
