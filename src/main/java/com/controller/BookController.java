@@ -21,8 +21,9 @@ public class BookController {
         return bookService.listAllBooks();
     }
 
+    @GetMapping
     @RequestMapping(value = "/{id}")
-    public Optional<Book> findById(@PathVariable Long id) {
+    public Optional<Book> findById(@PathVariable("id") Long id) {
         return bookService.findBookById(id);
     }
 
@@ -38,9 +39,7 @@ public class BookController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable Long id) {
-        if (bookService.findBookById(id).isPresent()) {
-            bookService.deleteBookById(id);
-        }
+    public void delete(@PathVariable("id") Long id) {
+        bookService.deleteBookById(id);
     }
 }
