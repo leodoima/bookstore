@@ -71,10 +71,33 @@ public class StockService {
         return stockRepository.save(stock);
     }
 
-    public void deleteStock(Long id){
-        if(stockRepository.existsById(id)){
+    public void deleteStock(Long id) {
+        if (stockRepository.existsById(id)) {
             stockRepository.deleteById(id);
         }
+    }
+
+    public Stock saleItem(Long id, int saleQuantity) {
+
+        if (saleQuantity < 0) {
+            return null;
+        }
+
+        Optional<Stock> optionalStock = findStockById(id);
+
+        if (optionalStock.isEmpty()) {
+            return null;
+        }
+
+        Stock stock = convertToStock(optionalStock);
+
+        if (stock.getAvailableQuantity() < saleQuantity) {
+            return null;
+        }
+
+        stock.setAvailableQuantity(stock.getAvailableQuantity() - saleQuantity);
+
+        return stockRepository.save(stock);
     }
 
     public Stock convertToStock(Optional<Stock> optionalStock) {
