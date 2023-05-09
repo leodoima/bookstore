@@ -2,7 +2,7 @@ package com.service;
 
 import com.model.Book;
 import com.model.Stock;
-import com.model.StockFormDTO;
+import com.dto.StockFormDTO;
 import com.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,48 +24,25 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Optional<Stock> findStockById(Long id) {
-        return stockRepository.findById(id);
-    }
+    public Stock patchStock(Long id, StockFormDTO stockFormDTO) throws Exception {
 
-    public Stock findStockByIdBook(Long idBook) {
-        Optional<Book> optionalBook = bookService.findBookById(idBook);
-
-        Book book = bookService.convertToBook(optionalBook);
-
-        return stockRepository.findByBook(book);
-    }
-
-    public Stock updateStock(Long id, StockFormDTO stockFormDTO) {
-
-        if (stockFormDTO.getAvailableQuantity() < 0) {
-            return null;
-        }
-
-        Optional<Stock> optionalStock = findStockById(id);
-        if (optionalStock.isEmpty()) {
-            return null;
-        }
-
-        Stock stock = convertToStock(optionalStock);
+        /*
+         * Pode ser reduzido ainda mais (avaliar)
+         * */
+        Stock stock = findStockById(id);
         stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
 
         return stockRepository.save(stock);
     }
 
     public Stock createStock(StockFormDTO stockFormDTO) {
-        Optional<Book> optionalBook = bookService.findBookById(stockFormDTO.getIdBook());
+        // Buscar livro pelo ID
+        // Validar se livro já encontra-se no estoque
+        // Criar registro no estoque
 
-        if (optionalBook.isEmpty()) {
-            return null;
-        }
+        Book book = bookService.findBookById(stockFormDTO.getIdBook());
 
-        Book book = bookService.convertToBook(optionalBook);
-        Stock stock = stockRepository.findByBook(book);
 
-        if (stock != null) {
-            return null;
-        }
 
         stock = new Stock(book, stockFormDTO.getAvailableQuantity());
         return stockRepository.save(stock);
@@ -78,6 +55,11 @@ public class StockService {
     }
 
     public Stock saleItem(Long id, int saleQuantity) {
+
+        // Validar quantidade de venda
+        // Verificar se item do estoque existe
+        // Aplicar update de quantidades de estoque
+        // Salvar venda
 
         if (saleQuantity < 0) {
             return null;
@@ -100,12 +82,33 @@ public class StockService {
         return stockRepository.save(stock);
     }
 
-    public Stock convertToStock(Optional<Stock> optionalStock) {
+    private Stock convertToStock(Optional<Stock> optionalStock) throws Exception {
         Stock stock = new Stock();
 
         stock.setId(optionalStock.get().getId());
         stock.setBook(optionalStock.get().getBook());
         stock.setAvailableQuantity(optionalStock.get().getAvailableQuantity());
+
+        return stock;
+    }
+
+    private Stock findStockById(Long id) throws Exception {
+
+        Optional<Stock> optionalStock = stockRepository.findById(id);
+        if (optionalStock.isEmpty()) {
+            throw new Exception("Stock is not found");
+        }
+
+        Stock stock = convertToStock(optionalStock);
+        return stock;
+    }
+
+    private Stock validateBookInStock(Book book){
+        Stock stock = stockRepository.findByBookStock(book);
+
+        if (stock != null) {
+            throw new Exception("");
+        }
 
         return stock;
     }

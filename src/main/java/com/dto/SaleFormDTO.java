@@ -1,4 +1,4 @@
-package com.model;
+package com.dto;
 
 import lombok.Data;
 
@@ -9,5 +9,5 @@ public class SaleFormDTO {
 
     private int saleQuantity;
 
-    private double priceUnity;
+    private double unitSalePrice;
 }

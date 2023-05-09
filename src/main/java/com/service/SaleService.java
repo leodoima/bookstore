@@ -1,7 +1,7 @@
 package com.service;
 
 import com.model.Sale;
-import com.model.SaleFormDTO;
+import com.dto.SaleFormDTO;
 import com.model.Stock;
 import com.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Service
 public class SaleService {
-
 
     @Autowired
     private SaleRepository saleRepository;
@@ -25,12 +24,8 @@ public class SaleService {
         return saleRepository.findAll();
     }
 
-    public Optional<Sale> findById(Long id) {
-        return saleRepository.findById(id);
-    }
-
     public Sale generateSale(SaleFormDTO saleFormDTO) {
-        if (saleFormDTO.getSaleQuantity() < 0 || saleFormDTO.getPriceUnity() <= 0) {
+        if (saleFormDTO.getSaleQuantity() < 0 || saleFormDTO.getUnitSalePrice() <= 0) {
             return null;
         }
 
@@ -43,9 +38,8 @@ public class SaleService {
         Sale sale = new Sale();
         sale.setStock(stock);
         sale.setSaleQuantity(saleFormDTO.getSaleQuantity());
-        sale.setPriceUnity(saleFormDTO.getPriceUnity());
+        sale.setUnitSalePrice(saleFormDTO.getUnitSalePrice());
 
         return saleRepository.save(sale);
     }
-
 }

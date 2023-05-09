@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long> {
 
-    Stock findByBook(Book book);
+    Stock findByBookStock(Book book);
 }

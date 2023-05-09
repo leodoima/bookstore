@@ -20,5 +20,5 @@ public class Sale {
     private int saleQuantity;
 
     @Column(name = "price_unity")
-    private double priceUnity;
+    private double unitSalePrice;
 }
