@@ -22,7 +22,7 @@ public class SaleController {
     }
 
     @PostMapping
-    public Sale generateSale(@RequestBody SaleFormDTO saleFormDTO) {
+    public Sale generateSale(@RequestBody SaleFormDTO saleFormDTO) throws Exception {
         return saleService.generateSale(saleFormDTO);
     }
 }

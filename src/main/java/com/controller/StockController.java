@@ -23,7 +23,7 @@ public class StockController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Stock create(@RequestBody StockFormDTO stockFormDTO) {
+    public Stock create(@RequestBody StockFormDTO stockFormDTO) throws Exception {
         return stockService.createStock(stockFormDTO);
     }
 
@@ -33,7 +33,7 @@ public class StockController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws Exception {
         stockService.deleteStock(id);
     }
 }

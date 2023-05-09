@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,56 +26,29 @@ public class StockService {
     }
 
     public Stock patchStock(Long id, StockFormDTO stockFormDTO) throws Exception {
-
-        /*
-         * Pode ser reduzido ainda mais (avaliar)
-         * */
         Stock stock = findStockById(id);
         stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
 
         return stockRepository.save(stock);
     }
 
-    public Stock createStock(StockFormDTO stockFormDTO) {
-        // Buscar livro pelo ID
-        // Validar se livro já encontra-se no estoque
-        // Criar registro no estoque
+    public Stock createStock(StockFormDTO stockFormDTO) throws Exception {
+        Book book = validateBookInStock(stockFormDTO);
+        Stock stock = new Stock(book, stockFormDTO.getAvailableQuantity());
 
-        Book book = bookService.findBookById(stockFormDTO.getIdBook());
-
-
-
-        stock = new Stock(book, stockFormDTO.getAvailableQuantity());
         return stockRepository.save(stock);
     }
 
-    public void deleteStock(Long id) {
-        if (stockRepository.existsById(id)) {
-            stockRepository.deleteById(id);
-        }
+    public void deleteStock(Long id) throws Exception {
+        findStockById(id);
+        stockRepository.deleteById(id);
     }
 
-    public Stock saleItem(Long id, int saleQuantity) {
-
-        // Validar quantidade de venda
-        // Verificar se item do estoque existe
-        // Aplicar update de quantidades de estoque
-        // Salvar venda
-
-        if (saleQuantity < 0) {
-            return null;
-        }
-
-        Optional<Stock> optionalStock = findStockById(id);
-
-        if (optionalStock.isEmpty()) {
-            return null;
-        }
-
-        Stock stock = convertToStock(optionalStock);
+    public Stock saleItem(Long id, int saleQuantity) throws Exception {
+        Stock stock = findStockById(id);
 
         if (stock.getAvailableQuantity() < saleQuantity) {
-            return null;
+            throw new Exception("Sale quantity is not disponible for this book");
         }
 
         stock.setAvailableQuantity(stock.getAvailableQuantity() - saleQuantity);
@@ -82,34 +56,18 @@ public class StockService {
         return stockRepository.save(stock);
     }
 
-    private Stock convertToStock(Optional<Stock> optionalStock) throws Exception {
-        Stock stock = new Stock();
-
-        stock.setId(optionalStock.get().getId());
-        stock.setBook(optionalStock.get().getBook());
-        stock.setAvailableQuantity(optionalStock.get().getAvailableQuantity());
-
-        return stock;
+    public Stock findStockById(Long id) {
+        return stockRepository.findById(id).orElseThrow();
     }
 
-    private Stock findStockById(Long id) throws Exception {
-
-        Optional<Stock> optionalStock = stockRepository.findById(id);
-        if (optionalStock.isEmpty()) {
-            throw new Exception("Stock is not found");
-        }
-
-        Stock stock = convertToStock(optionalStock);
-        return stock;
-    }
-
-    private Stock validateBookInStock(Book book){
-        Stock stock = stockRepository.findByBookStock(book);
+    private Book validateBookInStock(StockFormDTO stockFormDTO) throws Exception {
+        Book book = bookService.findBookById(stockFormDTO.getIdBook());
+        Stock stock = stockRepository.findByBook(book);
 
         if (stock != null) {
-            throw new Exception("");
+            throw new Exception("Book is already exists in stock");
         }
 
-        return stock;
+        return book;
     }
 }

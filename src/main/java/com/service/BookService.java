@@ -36,27 +36,8 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    private Book convertToBook(Optional<Book> optionalBook) {
-        Book book = new Book();
-
-        book.setId((optionalBook.get().getId()));
-        book.setTitle(optionalBook.get().getTitle());
-        book.setAuthor(optionalBook.get().getAuthor());
-        book.setPublisher(optionalBook.get().getPublisher());
-        book.setPublicationDate(optionalBook.get().getPublicationDate());
-        book.setSalePrice(optionalBook.get().getSalePrice());
-
-        return book;
-    }
-
     private void validateExistsBook(Long id) throws Exception {
         if (!bookRepository.existsById(id)) {
-            throw new Exception("Books is not found");
-        }
-    }
-
-    private void validateExistsBook(Book book) throws Exception {
-        if (!bookRepository.existsById(book.getId())) {
             throw new Exception("Books is not found");
         }
     }
