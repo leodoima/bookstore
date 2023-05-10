@@ -27,4 +27,15 @@ public class Stock {
 
     public Stock() {
     }
+
+    public void setAvailableQuantity(int availableQuantity) throws Exception {
+        validNewAvailableQuantity(availableQuantity);
+        this.availableQuantity = availableQuantity;
+    }
+
+    private void validNewAvailableQuantity(int availableQuantity) throws Exception {
+        if (availableQuantity < 0) {
+            throw new Exception("Value for Available Quantity is not valid");
+        }
+    }
 }

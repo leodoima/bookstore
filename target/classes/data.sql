@@ -1,5 +1,5 @@
 INSERT INTO books
-(title, author, publisher, publication, price)
+(title, author, publisher, publication_date, sale_price)
 VALUES
 ('Fortaleza Digital', 'Dan Brown', 'Sextante', '1998-01-15', 31),
 ('Impacto Profundo', 'Dan Brown', 'Sextante', '2003-04-28', 35),

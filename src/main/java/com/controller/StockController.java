@@ -1,7 +1,7 @@
 package com.controller;
 
 import com.model.Stock;
-import com.model.StockFormDTO;
+import com.dto.StockFormDTO;
 import com.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,31 +21,19 @@ public class StockController {
         return stockService.listAllStock();
     }
 
-    @GetMapping
-    @RequestMapping(value = "/{id}")
-    public Stock findById(@PathVariable Long id) {
-        return null;
-    }
-
-    @GetMapping
-    @RequestMapping(value = "/book/{idBook}")
-    public Stock findByBook(@PathVariable("idBook") Long idBook) {
-        return stockService.findStockByIdBook(idBook);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Stock create(@RequestBody StockFormDTO stockFormDTO) {
+    public Stock create(@RequestBody StockFormDTO stockFormDTO) throws Exception {
         return stockService.createStock(stockFormDTO);
     }
 
-    @PutMapping("/{id}")
-    public Stock update(@PathVariable("id") Long id, @RequestBody StockFormDTO stockFormDTO) {
-        return stockService.updateStock(id, stockFormDTO);
+    @PatchMapping("/{id}")
+    public Stock patch(@PathVariable("id") Long id, @RequestBody StockFormDTO stockFormDTO) throws Exception {
+        return stockService.patchStock(id, stockFormDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws Exception {
         stockService.deleteStock(id);
     }
 }

@@ -18,6 +18,6 @@ public class Book {
     private String title;
     private String author;
     private String publisher;
-    private Date publication;
-    private double price;
+    private Date publicationDate;
+    private double salePrice;
 }
