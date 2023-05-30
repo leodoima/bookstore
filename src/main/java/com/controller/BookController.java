@@ -1,11 +1,11 @@
 package com.controller;
 
+import com.dto.InputBookDTO;
 import com.model.Book;
 import com.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -20,25 +20,20 @@ public class BookController {
         return bookService.listAllBooks();
     }
 
-    @GetMapping
-    @RequestMapping(value = "/{id}")
-    public Book findById(@PathVariable("id") Long id) {
-        return bookService.findBookById(id);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
-        return bookService.createBook(book);
+    public Book create(@RequestBody InputBookDTO inputBookDTO) {
+        return bookService.createBook(inputBookDTO);
     }
 
-    @PutMapping
-    public Book update(@RequestBody Book book) throws Exception {
-        return bookService.updateBook(book);
+    @PatchMapping
+    @RequestMapping(value = "/{id}")
+    public Book update(@PathVariable("id") Long idBook, @RequestBody InputBookDTO inputBookDTO) {
+        return bookService.updateBook(idBook, inputBookDTO);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable("id") Long id) throws Exception {
-        bookService.deleteBookById(id);
+    public void delete(@PathVariable("id") Long idBook) {
+        bookService.deleteBookById(idBook);
     }
 }

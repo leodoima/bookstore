@@ -27,14 +27,14 @@ public class StockService {
 
     public Stock patchStock(Long id, StockFormDTO stockFormDTO) throws Exception {
         Stock stock = findStockById(id);
-        stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
+        // stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
 
         return stockRepository.save(stock);
     }
 
     public Stock createStock(StockFormDTO stockFormDTO) throws Exception {
         Book book = validateBookInStock(stockFormDTO);
-        Stock stock = new Stock(book, stockFormDTO.getAvailableQuantity());
+        Stock stock = new Stock(book, 12);
 
         return stockRepository.save(stock);
     }

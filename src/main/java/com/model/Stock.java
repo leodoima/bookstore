@@ -3,8 +3,10 @@ package com.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
+@Getter
 @Entity
 @Table(name = "stock")
 public class Stock {

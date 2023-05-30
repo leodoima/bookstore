@@ -19,5 +19,5 @@ public class Book {
     private String author;
     private String publisher;
     private Date publicationDate;
-    private double salePrice;
+    private Double salePrice;
 }
