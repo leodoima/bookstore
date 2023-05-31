@@ -1,4 +1,6 @@
 package com.dto;
 
-public class InputStockDTO {
+import com.model.Book;
+
+public record InputStockDTO(Book book, Integer availableQuantity) {
 }

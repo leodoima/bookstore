@@ -1,15 +1,15 @@
 package com.service;
 
+import com.dto.InputStockDTO;
+import com.helper.EntityMapper;
+import com.helper.Reflection;
 import com.model.Book;
 import com.model.Stock;
-import com.dto.StockFormDTO;
 import com.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class StockService {
@@ -25,23 +25,46 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Stock patchStock(Long id, StockFormDTO stockFormDTO) throws Exception {
-        Stock stock = findStockById(id);
-        // stock.setAvailableQuantity(stockFormDTO.getAvailableQuantity());
+    public Stock createStock(InputStockDTO inputStockDTO) throws Exception {
 
-        return stockRepository.save(stock);
+        if (isExistsInStock(inputStockDTO.book())) {
+            throw new Exception("Record of this book already exists in stock");
+        }
+
+        if (!bookService.isExists(inputStockDTO.book())) {
+            throw new Exception("This book is not found");
+        }
+
+        Stock createStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
+        return stockRepository.save(createStock);
     }
 
-    public Stock createStock(StockFormDTO stockFormDTO) throws Exception {
-        Book book = validateBookInStock(stockFormDTO);
-        Stock stock = new Stock(book, 12);
+    public Stock updateStock(Long idStock, InputStockDTO inputStockDTO) throws Exception {
+        Stock originalStock = findStockById(idStock);
+        Stock updateStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
 
-        return stockRepository.save(stock);
+        Stock unifiedStocks = (Stock) Reflection.mutableObjects(originalStock, updateStock);
+
+        if (!bookService.isExists(unifiedStocks.getBook())) {
+            throw new Exception("This book is not found");
+        }
+
+        return stockRepository.save(unifiedStocks);
     }
 
-    public void deleteStock(Long id) throws Exception {
-        findStockById(id);
-        stockRepository.deleteById(id);
+    public void deleteStock(Long idStock) {
+        Stock stock = findStockById(idStock);
+        stockRepository.delete(stock);
+    }
+
+    public Stock findStockById(Long id) {
+        return stockRepository.findById(id).orElseThrow();
+    }
+
+    private boolean isExistsInStock(Book book) {
+        Stock stock = stockRepository.findByBook(book);
+
+        return (stock == null) ? false : true;
     }
 
     public Stock saleItem(Long id, int saleQuantity) throws Exception {
@@ -54,20 +77,5 @@ public class StockService {
         stock.setAvailableQuantity(stock.getAvailableQuantity() - saleQuantity);
 
         return stockRepository.save(stock);
-    }
-
-    public Stock findStockById(Long id) {
-        return stockRepository.findById(id).orElseThrow();
-    }
-
-    private Book validateBookInStock(StockFormDTO stockFormDTO) throws Exception {
-        Book book = bookService.findBookById(stockFormDTO.getIdBook());
-        Stock stock = stockRepository.findByBook(book);
-
-        if (stock != null) {
-            throw new Exception("Book is already exists in stock");
-        }
-
-        return book;
     }
 }

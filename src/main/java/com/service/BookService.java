@@ -1,11 +1,12 @@
 package com.service;
 
 import com.dto.InputBookDTO;
-import com.helper.BookMapper;
+import com.helper.EntityMapper;
 import com.helper.Reflection;
 import com.model.Book;
 import com.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +27,13 @@ public class BookService {
     }
 
     public Book createBook(InputBookDTO inputBookDTO) {
-        Book createBook = BookMapper.INSTANCE.toEntity(inputBookDTO);
+        Book createBook = EntityMapper.INSTANCE.toBookEntity(inputBookDTO);
         return bookRepository.save(createBook);
     }
 
     public Book updateBook(Long idBook, InputBookDTO inputBookDTO) {
         Book originalBook = findBookById(idBook);
-        Book updateBook = BookMapper.INSTANCE.toEntity(inputBookDTO);
+        Book updateBook = EntityMapper.INSTANCE.toBookEntity(inputBookDTO);
 
         Book unifiedBooks = (Book) Reflection.mutableObjects(originalBook, updateBook);
 
@@ -42,5 +43,9 @@ public class BookService {
     public void deleteBookById(Long idBook) {
         Book book = findBookById(idBook);
         bookRepository.delete(book);
+    }
+
+    public boolean isExists(Book book){
+        return bookRepository.existsById(book.getId());
     }
 }
