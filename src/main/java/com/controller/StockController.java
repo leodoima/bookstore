@@ -1,7 +1,7 @@
 package com.controller;
 
+import com.dto.InputStockDTO;
 import com.model.Stock;
-import com.dto.StockFormDTO;
 import com.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,17 +23,17 @@ public class StockController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Stock create(@RequestBody StockFormDTO stockFormDTO) throws Exception {
-        return stockService.createStock(stockFormDTO);
+    public Stock create(@RequestBody InputStockDTO inputStockDTO) throws Exception {
+        return stockService.createStock(inputStockDTO);
     }
 
     @PatchMapping("/{id}")
-    public Stock patch(@PathVariable("id") Long id, @RequestBody StockFormDTO stockFormDTO) throws Exception {
-        return stockService.patchStock(id, stockFormDTO);
+    public Stock update(@PathVariable("id") Long idStock, @RequestBody InputStockDTO inputStockDTO) throws Exception {
+        return stockService.updateStock(idStock, inputStockDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) throws Exception {
-        stockService.deleteStock(id);
+    public void delete(@PathVariable("id") Long idStock) {
+        stockService.deleteStock(idStock);
     }
 }
