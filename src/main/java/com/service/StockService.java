@@ -1,8 +1,8 @@
 package com.service;
 
 import com.dto.InputStockDTO;
-import com.helper.EntityMapper;
-import com.helper.Reflection;
+import com.mapper.EntityMapper;
+import com.facade.ReflectionFacade;
 import com.model.Book;
 import com.model.Stock;
 import com.repository.StockRepository;
@@ -27,13 +27,10 @@ public class StockService {
 
     public Stock createStock(InputStockDTO inputStockDTO) throws Exception {
 
-        if (isExistsInStock(inputStockDTO.book())) {
-            throw new Exception("Record of this book already exists in stock");
-        }
+        if (isExistsInStock(inputStockDTO.book())) throw new Exception("Record of this book already exists in stock");
 
-        if (!bookService.isExists(inputStockDTO.book())) {
-            throw new Exception("This book is not found");
-        }
+        if (!bookService.isExists(inputStockDTO.book())) throw new Exception("This book is not found");
+        
 
         Stock createStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
         return stockRepository.save(createStock);
@@ -43,7 +40,7 @@ public class StockService {
         Stock originalStock = findStockById(idStock);
         Stock updateStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
 
-        Stock unifiedStocks = (Stock) Reflection.mutableObjects(originalStock, updateStock);
+        Stock unifiedStocks = (Stock) ReflectionFacade.mutableObjects(originalStock, updateStock);
 
         if (!bookService.isExists(unifiedStocks.getBook())) {
             throw new Exception("This book is not found");

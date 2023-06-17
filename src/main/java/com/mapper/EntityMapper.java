@@ -1,4 +1,4 @@
-package com.helper;
+package com.mapper;
 
 import com.dto.InputBookDTO;
 import com.dto.InputStockDTO;

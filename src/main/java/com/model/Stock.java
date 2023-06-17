@@ -22,16 +22,6 @@ public class Stock {
     @Column(name = "available_quantity")
     private Integer availableQuantity;
 
-    public Stock(Book book, int availableQuantity) throws Exception {
-        validSetAvailableQuantity(availableQuantity);
-
-        this.book = book;
-        this.availableQuantity = availableQuantity;
-    }
-
-    public Stock() {
-    }
-
     public void setAvailableQuantity(Integer availableQuantity) throws Exception {
         validSetAvailableQuantity(availableQuantity);
         this.availableQuantity = availableQuantity;

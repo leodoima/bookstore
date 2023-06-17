@@ -1,8 +1,8 @@
-package com.helper;
+package com.facade;
 
 import java.lang.reflect.Field;
 
-public class Reflection {
+public class ReflectionFacade {
     public static Object mutableObjects(Object target, Object source) {
 
         for (Field field : target.getClass().getDeclaredFields()) {
