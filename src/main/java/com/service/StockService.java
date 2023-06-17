@@ -1,12 +1,17 @@
 package com.service;
 
 import com.dto.InputStockDTO;
+import com.dto.stock.InputNewStockDTO;
+import com.dto.stock.InputUpdateStockDTO;
+import com.dto.stock.OutputDetailStockDTO;
 import com.mapper.EntityMapper;
 import com.facade.ReflectionFacade;
 import com.model.Book;
 import com.model.Stock;
 import com.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,32 +26,30 @@ public class StockService {
     private BookService bookService;
 
 
-    public List<Stock> listAllStock() {
-        return stockRepository.findAll();
+    public OutputDetailStockDTO listOneItemStock(Long idStockItem) {
+        Stock stockItem = findStockById(idStockItem);
+        return convertToDTO(stockItem);
     }
 
-    public Stock createStock(InputStockDTO inputStockDTO) throws Exception {
-
-        if (isExistsInStock(inputStockDTO.book())) throw new Exception("Record of this book already exists in stock");
-
-        if (!bookService.isExists(inputStockDTO.book())) throw new Exception("This book is not found");
-        
-
-        Stock createStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
-        return stockRepository.save(createStock);
+    public Page<OutputDetailStockDTO> listAllStock(Pageable pageable) {
+        return stockRepository.findAll(pageable).map(this::convertToDTO);
     }
 
-    public Stock updateStock(Long idStock, InputStockDTO inputStockDTO) throws Exception {
-        Stock originalStock = findStockById(idStock);
-        Stock updateStock = EntityMapper.INSTANCE.toStockEntity(inputStockDTO);
+    public OutputDetailStockDTO createStock(InputNewStockDTO inputNewStockDTO) throws Exception {
+        Book book = validateEntryBookStock(inputNewStockDTO);
 
-        Stock unifiedStocks = (Stock) ReflectionFacade.mutableObjects(originalStock, updateStock);
+        Stock createdStockItem = stockRepository.save(new Stock(book, inputNewStockDTO.availableQuantity()));
+        return convertToDTO(createdStockItem);
+    }
 
-        if (!bookService.isExists(unifiedStocks.getBook())) {
+
+    public OutputDetailStockDTO updateStock(InputUpdateStockDTO inputUpdateStockDTO) throws Exception {
+        Stock updatedStock = updateStockDetails(inputUpdateStockDTO);
+
+        if (!bookService.isExists(updatedStock.getBook().getId())) {
             throw new Exception("This book is not found");
         }
-
-        return stockRepository.save(unifiedStocks);
+        return convertToDTO(stockRepository.save(updatedStock));
     }
 
     public void deleteStock(Long idStock) {
@@ -60,8 +63,26 @@ public class StockService {
 
     private boolean isExistsInStock(Book book) {
         Stock stock = stockRepository.findByBook(book);
+        return stock != null;
+    }
 
-        return (stock == null) ? false : true;
+    private OutputDetailStockDTO convertToDTO(Stock stock) {
+        return new OutputDetailStockDTO(stock);
+    }
+
+    private Stock updateStockDetails(InputUpdateStockDTO inputUpdateStockDTO) {
+        Stock originalStock = findStockById(inputUpdateStockDTO.idStockItem());
+        return (Stock) ReflectionFacade.mutableObjects(originalStock, new Stock(inputUpdateStockDTO));
+    }
+
+    private Book validateEntryBookStock(InputNewStockDTO inputNewStockDTO) throws Exception {
+        Book book = bookService.findBookById(inputNewStockDTO.idBook());
+
+        if (book == null) throw new Exception("This book is not found");
+
+        if (isExistsInStock(book)) throw new Exception("Record of this book already exists in stock");
+
+        return book;
     }
 
     public Stock saleItem(Long id, int saleQuantity) throws Exception {

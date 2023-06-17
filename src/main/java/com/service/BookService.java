@@ -1,8 +1,8 @@
 package com.service;
 
-import com.dto.InputNewBookDTO;
-import com.dto.InputUpdateBookDTO;
-import com.dto.OutputDetailBookDTO;
+import com.dto.book.InputNewBookDTO;
+import com.dto.book.InputUpdateBookDTO;
+import com.dto.book.OutputDetailBookDTO;
 import com.mapper.BookMapper;
 import com.facade.ReflectionFacade;
 import com.model.Book;
@@ -43,11 +43,11 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public boolean isExists(Book book) {
-        return bookRepository.existsById(book.getId());
+    public boolean isExists(Long id) {
+        return bookRepository.existsById(id);
     }
 
-    private Book findBookById(Long id) {
+    public Book findBookById(Long id) {
         return bookRepository.findById(id).orElseThrow();
     }
 
@@ -65,7 +65,7 @@ public class BookService {
         return (Book) ReflectionFacade.mutableObjects(originalBook, convertToBook(inputUpdateBookDTO));
     }
 
-    private OutputDetailBookDTO convertToDTO(Book book) {
-        return BookMapper.INSTANCE.convertToDTO(book);
+    public OutputDetailBookDTO convertToDTO(Book book) {
+        return new OutputDetailBookDTO(book);
     }
 }

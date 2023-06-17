@@ -1,17 +1,15 @@
 package com.mapper;
 
-import com.dto.InputNewBookDTO;
-import com.dto.InputStockDTO;
-import com.dto.InputUpdateBookDTO;
-import com.dto.OutputDetailBookDTO;
+import com.dto.book.InputNewBookDTO;
+import com.dto.book.InputUpdateBookDTO;
+import com.dto.book.OutputDetailBookDTO;
 import com.model.Book;
-import com.model.Stock;
 import java.util.Date;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-06-15T01:09:56-0300",
+    date = "2023-06-17T01:28:47-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.6 (Eclipse Adoptium)"
 )
 public class BookMapperImpl implements BookMapper {
@@ -73,19 +71,5 @@ public class BookMapperImpl implements BookMapper {
         OutputDetailBookDTO outputDetailBookDTO = new OutputDetailBookDTO( id, title, author, publisher, publicationDate, salePrice );
 
         return outputDetailBookDTO;
-    }
-
-    @Override
-    public Stock toStockEntity(InputStockDTO inputStockDTO) throws Exception {
-        if ( inputStockDTO == null ) {
-            return null;
-        }
-
-        Stock stock = new Stock();
-
-        stock.setAvailableQuantity( inputStockDTO.availableQuantity() );
-        stock.setBook( inputStockDTO.book() );
-
-        return stock;
     }
 }
