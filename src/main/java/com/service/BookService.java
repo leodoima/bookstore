@@ -34,7 +34,6 @@ public class BookService {
 
     public OutputDetailBookDTO updateBook(InputUpdateBookDTO inputUpdateBookDTO) {
         Book updatedBook = updateBookDetails(inputUpdateBookDTO);
-
         return convertToDTO(bookRepository.save(updatedBook));
     }
 
@@ -52,20 +51,19 @@ public class BookService {
     }
 
     private Book convertToBook(InputNewBookDTO inputNewBookDTO) {
-        return BookMapper.INSTANCE.convertToEntity(inputNewBookDTO);
+        return new Book(inputNewBookDTO);
     }
 
     private Book convertToBook(InputUpdateBookDTO inputUpdateBookDTO) {
-        return BookMapper.INSTANCE.convertToEntity(inputUpdateBookDTO);
+        return new Book(inputUpdateBookDTO);
     }
 
     private Book updateBookDetails(InputUpdateBookDTO inputUpdateBookDTO) {
         Book originalBook = findBookById(inputUpdateBookDTO.idBook());
-
         return (Book) ReflectionFacade.mutableObjects(originalBook, convertToBook(inputUpdateBookDTO));
     }
 
-    public OutputDetailBookDTO convertToDTO(Book book) {
+    private OutputDetailBookDTO convertToDTO(Book book) {
         return new OutputDetailBookDTO(book);
     }
 }
