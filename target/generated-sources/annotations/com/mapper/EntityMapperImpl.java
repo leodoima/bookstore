@@ -1,4 +1,4 @@
-package com.helper;
+package com.mapper;
 
 import com.dto.InputBookDTO;
 import com.dto.InputStockDTO;
@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-30T21:11:49-0300",
+    date = "2023-06-14T21:49:10-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.6 (Eclipse Adoptium)"
 )
 public class EntityMapperImpl implements EntityMapper {
