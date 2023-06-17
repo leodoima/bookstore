@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-06-14T21:49:10-0300",
+    date = "2023-06-17T14:46:54-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.6 (Eclipse Adoptium)"
 )
 public class EntityMapperImpl implements EntityMapper {
@@ -38,8 +38,8 @@ public class EntityMapperImpl implements EntityMapper {
 
         Stock stock = new Stock();
 
-        stock.setAvailableQuantity( inputStockDTO.availableQuantity() );
         stock.setBook( inputStockDTO.book() );
+        stock.setAvailableQuantity( inputStockDTO.availableQuantity() );
 
         return stock;
     }

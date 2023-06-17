@@ -1,8 +1,9 @@
 package com.mapper;
 
-import com.dto.*;
+import com.dto.book.InputNewBookDTO;
+import com.dto.book.InputUpdateBookDTO;
+import com.dto.book.OutputDetailBookDTO;
 import com.model.Book;
-import com.model.Stock;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -19,6 +20,4 @@ public interface BookMapper {
     Book convertToEntity(InputUpdateBookDTO inputUpdateBookDTO);
 
     OutputDetailBookDTO convertToDTO(Book book);
-
-    Stock toStockEntity(InputStockDTO inputStockDTO) throws Exception;
 }

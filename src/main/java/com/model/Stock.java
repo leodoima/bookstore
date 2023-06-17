@@ -1,12 +1,15 @@
 package com.model;
 
 
+import com.dto.stock.InputUpdateStockDTO;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
-@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "stock")
 public class Stock {
@@ -22,14 +25,14 @@ public class Stock {
     @Column(name = "available_quantity")
     private Integer availableQuantity;
 
-    public void setAvailableQuantity(Integer availableQuantity) throws Exception {
-        validSetAvailableQuantity(availableQuantity);
+    public Stock(Book book, Integer availableQuantity) {
+        this.book = book;
         this.availableQuantity = availableQuantity;
     }
 
-    private void validSetAvailableQuantity(Integer availableQuantity) throws Exception {
-        if (availableQuantity < 0) {
-            throw new Exception("Value for Available Quantity is not valid");
-        }
+    public Stock(InputUpdateStockDTO inputUpdateStockDTO) {
+        this.book = null;
+        this.id = inputUpdateStockDTO.idStockItem();
+        this.availableQuantity = inputUpdateStockDTO.availableQuantity();
     }
 }

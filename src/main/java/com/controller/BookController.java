@@ -1,8 +1,8 @@
 package com.controller;
 
-import com.dto.InputNewBookDTO;
-import com.dto.InputUpdateBookDTO;
-import com.dto.OutputDetailBookDTO;
+import com.dto.book.InputNewBookDTO;
+import com.dto.book.InputUpdateBookDTO;
+import com.dto.book.OutputDetailBookDTO;
 import com.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class BookController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity update(@RequestBody @Valid InputUpdateBookDTO inputUpdateBookDTO) {
+    public ResponseEntity<OutputDetailBookDTO> update(@RequestBody @Valid InputUpdateBookDTO inputUpdateBookDTO) {
         OutputDetailBookDTO detailBookDTO = bookService.updateBook(inputUpdateBookDTO);
         return ResponseEntity.ok(detailBookDTO);
     }
